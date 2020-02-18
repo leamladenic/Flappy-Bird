@@ -10,6 +10,8 @@ import javax.swing.Timer;
 import javax.swing.JFrame;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.geom.Rectangle2D;
@@ -17,7 +19,7 @@ import java.util.ArrayList;
 import java.util.Random;
 import java.awt.Shape;
 
-public class FlappyBird implements ActionListener, MouseListener{
+public class FlappyBird implements ActionListener, MouseListener, KeyListener{
 	public static FlappyBird flappyBird;
 	public final int WIDTH=1200, HEIGHT=800;
 	public Renderer renderer;
@@ -39,6 +41,7 @@ public class FlappyBird implements ActionListener, MouseListener{
 		jframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		jframe.setSize(WIDTH, HEIGHT);
 		jframe.addMouseListener(this);
+		jframe.addKeyListener(this);
 		jframe.setResizable(false);
 		jframe.setTitle("Flappy Bird");
 		jframe.setVisible(true);
@@ -86,6 +89,11 @@ public class FlappyBird implements ActionListener, MouseListener{
 		}
 		
 		for(Rectangle column : columns) {
+			
+			if(column.y== 0 && bird.x + bird.width/2 > column.x + column.width/2 - 10 && bird.x + bird.width/2 < column.x + column.width/2 +10) {
+				score++;
+			}
+			
 			boolean collide = column.intersects(bird);
 			
 		      if(collide) {
@@ -96,7 +104,7 @@ public class FlappyBird implements ActionListener, MouseListener{
 		      
 		    }
 		
-		if(gameOver) {
+		if(bird.y + yMotion >= HEIGHT - 120) {
 			bird.y = HEIGHT -120-bird.height;}
 		
 		renderer.repaint();
@@ -184,6 +192,11 @@ public class FlappyBird implements ActionListener, MouseListener{
 		
 		if(gameOver) {
 			g.drawString("Game Over", 350, HEIGHT/2 - 50);
+			g.setFont(new Font("Arial", 1, 70));
+			g.drawString("Score: " + String.valueOf(score), 500, HEIGHT/2 + 40);
+		}
+		if(!gameOver && started) {
+			g.drawString(String.valueOf(score), WIDTH/2 -25, 100);
 		}
 		
 	}
@@ -218,6 +231,29 @@ public class FlappyBird implements ActionListener, MouseListener{
 
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
+		
+	}
+
+
+	@Override
+	public void keyPressed(KeyEvent arg0) {
+		
+		
+	}
+
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		if(e.getKeyCode () == KeyEvent.VK_SPACE) {
+			jump();
+		}
+		 
+	}
+
+
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		
 		
 	}
 
